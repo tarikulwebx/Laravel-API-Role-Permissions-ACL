@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\LoginRequest;
+use App\Http\Resources\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -47,18 +50,24 @@ class AuthController extends Controller
 
         $user->save();
 
+        // assign role
+        $user_role = Role::where(["name" => "user"])->first();
+        if ($user_role) {
+            $user->assignRole($user_role);
+        }
+
         // auth tokenization
         $token = $user->createToken("auth_token")->plainTextToken;
         $expirationTime = 60 * 24 * 30; // 30 days expiration time
 
         // assign token expiration date
         $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
-        $user = $user->fresh();
 
-        // return token, details with cookie
+        $userResource = new UserResource($user);
+
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'user' => $userResource->toArray($request),
         ])->cookie('token', $token, $expirationTime);
     }
 
@@ -71,8 +80,9 @@ class AuthController extends Controller
      *
      * @return JSON
      */
-    public function login(Request $request)
+    public function login(LoginRequest $request)
     {
+        /*
         // request validation
         $validator = Validator::make($request->all(), [
             "email_or_username" => "required|string|max:255",
@@ -87,8 +97,14 @@ class AuthController extends Controller
             ], 422);
         }
 
+
+
         // validated input credentails
         $credentials = $validator->validated();
+
+         */
+
+        $credentials = $request->all();
 
         // login type (username/email)
         $loginType = filter_var($credentials['email_or_username'], FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -117,10 +133,11 @@ class AuthController extends Controller
         $expirationTime = 60 * 24 * 30;
         $user->tokens()->orderBy('created_at', 'desc')->first()->update(['expires_at' => now()->addMinutes($expirationTime)]);
 
-        // success login response with token, username with cookie
+        $userResource = new UserResource($user);
+
         return response()->json([
             'token' => $token,
-            'user' => $user,
+            'user' => $userResource->toArray($request),
         ])->cookie('token', $token, $expirationTime);
     }
 
