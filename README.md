@@ -7,9 +7,9 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
 </p>
 
-## Laravel-Auth-API
+## Laravel-API-User-Role-Permissions-ACL
 
-User authentication (Registration, Login, Logout) example of Laravel API using Sanctum.
+User roles and permissions management in Laravel API.
 
 ## Setup
 
