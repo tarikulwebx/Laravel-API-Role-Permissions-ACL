@@ -17,4 +17,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/logout', [AuthController::class, 'logout']);
     // user
     Route::get("/user", [UserController::class, "user"]);
+
+    // create user
+    Route::post('/users/create', [UserController::class, 'create'])->middleware('can:users.create');
+    Route::get('/users', [UserController::class, 'list'])->middleware('can:users.list');
 });

@@ -2,8 +2,12 @@
 
 namespace App\Exceptions;
 
+use App\Http\Helpers\Helper;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+
 
 class Handler extends ExceptionHandler
 {
@@ -21,10 +25,18 @@ class Handler extends ExceptionHandler
     /**
      * Register the exception handling callbacks for the application.
      */
-    public function register(): void
+    public function register()
     {
         $this->reportable(function (Throwable $e) {
             //
+        });
+
+        $this->renderable(function (Throwable $e, $request) {
+            // Log::info('Exception class: ' . get_class($e));
+            if ($e instanceof AccessDeniedHttpException) {
+                // Log::info("UnauthorizedException caught");
+                Helper::sendError("You do not have the required authorization.", [], 401);
+            }
         });
     }
 }

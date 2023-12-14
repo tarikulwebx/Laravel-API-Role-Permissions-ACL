@@ -32,6 +32,12 @@ class UserSeeder extends Seeder
             $user_delete
         ]);
 
+        // User Role
+        $user_role = Role::create(["name" => "user"]);
+        $user_role->givePermissionTo([
+            $user_list
+        ]);
+
         // Admin User
         $admin = User::create([
             "name"     => "Admin",
@@ -41,6 +47,8 @@ class UserSeeder extends Seeder
         ]);
 
         $admin->assignRole($admin_role); // assigned role with the role's permissions
+
+        /*
         $admin->givePermissionTo([
             $user_list,
             $user_view,
@@ -48,6 +56,7 @@ class UserSeeder extends Seeder
             $user_update,
             $user_delete
         ]); // assigning specified permissions
+        */
 
 
         // User
@@ -59,15 +68,12 @@ class UserSeeder extends Seeder
         ]);
 
         // user role
-        $user_role = Role::create(["name" => "user"]);
-
         $user->assignRole($user_role);
+
+        /*
         $user->givePermissionTo([
             $user_list,
         ]);
-
-        $user_role->givePermissionTo([
-            $user_list
-        ]);
+        */
     }
 }

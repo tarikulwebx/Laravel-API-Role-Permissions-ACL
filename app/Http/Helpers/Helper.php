@@ -21,4 +21,21 @@ class Helper
             response()->json($response, $code)
         );
     }
+
+    /*
+        Success response
+    */
+    public static function successResponse($message, $data, $code = 200)
+    {
+        $response = [
+            'success' => true,
+            'message' => $message,
+        ];
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+
+        return  response()->json($response, $code);
+    }
 }
