@@ -48,4 +48,13 @@ class UserController extends Controller
 
         return response()->json($users, 200);
     }
+
+    // user view
+    public function view($id)
+    {
+        $user = User::findOrFail($id);
+
+        $userResource = new UserResource($user);
+        return Helper::successResponse("User found successfully", $userResource);
+    }
 }

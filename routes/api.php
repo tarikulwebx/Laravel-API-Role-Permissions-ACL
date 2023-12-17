@@ -20,5 +20,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // create user
     Route::post('/users/create', [UserController::class, 'create'])->middleware('can:users.create');
+
+    // user list
     Route::get('/users', [UserController::class, 'list'])->middleware('can:users.list');
+
+    // user view
+    Route::get('/users/view/{id}', [UserController::class, 'view'])->middleware('can:users.view');
 });
