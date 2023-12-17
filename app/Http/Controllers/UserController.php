@@ -44,8 +44,7 @@ class UserController extends Controller
     // user list
     public function list()
     {
-        $users = User::all();
-
+        $users = User::with(['roles:name', 'permissions:name'])->get();
         return response()->json($users, 200);
     }
 
